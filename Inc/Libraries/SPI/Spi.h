@@ -18,6 +18,6 @@
 #define SPI1_DISABLE SPI1->CR1 &=~ SPI_CR1_SPE; //SPI disable
 
 void Spi1_Setup();
-void Spi1_Send(uint8_t byte);
+void Spi1_Send(uint8_t *byte, uint32_t length);
 
 #endif /* LIBRARIES_SPI_SPI_H_ */

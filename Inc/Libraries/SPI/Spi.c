@@ -22,16 +22,23 @@ void Spi1_Setup()
 	SPI1->CR2 = 0;
 }
 
-void Spi1_Send(uint8_t byte)
+void Spi1_Send(uint8_t *byte, uint32_t length)
 {
 
-	while (!((SPI1->SR)&(1<<1))) {};  // wait for TXE bit to set -> This will indicate that the buffer is empty
-	SPI1->DR = byte;  // load the data into the Data Register
+    while (length > 0U)
+    {
+    	//not sure if necessary
+    	if (((SPI1->SR)&(1<<1)))//Wait for TXE bit to set -> This will indicate that the buffer is empty
+    	{
+    		*((volatile uint8_t *) &SPI1->DR) = (*byte);//Load the data into the Data Register
+    		byte++;
+    		length--;
+    	}
 
-	while (((SPI1->SR)&(1<<7))) {};  // wait for BSY bit to Reset -> This will indicate that SPI is not busy in communication
+    }
 
-	//  Clear the Overrun flag by reading DR and SR
-	uint8_t temp = SPI1->DR;
-			temp = SPI1->SR;
+    //not sure if necessary
+	//Wait for BSY bit to Reset -> This will indicate that SPI is not busy in communication
+	while (((SPI1->SR)&(1<<7))) {};
 
 }
