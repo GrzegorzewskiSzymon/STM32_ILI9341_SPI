@@ -16,6 +16,7 @@ int main(void)
 	SPI1_ENABLE;
 
 	ILI9341_Init();
+	ILI9341_DrawPixel(0, 0, 240, 320, ILI9341_CYAN);
 
 	while(1)
 	{
