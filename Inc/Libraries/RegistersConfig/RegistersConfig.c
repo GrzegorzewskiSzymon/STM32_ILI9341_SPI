@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include "stm32g431xx.h"
+#include "RegistersConfig.h"
 
 void GPIOA_Setup()
 {
@@ -29,6 +30,9 @@ void GPIOA_Setup()
 	//PA7 as MOSI
 	GPIOA->MODER  &=   ~(GPIO_MODER_MODER7_0);
 	GPIOA->AFR[0] |= (5<<GPIO_AFRL_AFSEL7_Pos);
+
+	//PA8 as TFT_RESET
+	GPIOA->MODER &= ~(GPIO_MODER_MODER8_1);//General purpose output mode
 
 	//PA9 as D/C
 	GPIOA->MODER &= ~(GPIO_MODER_MODER9_1);//General purpose output mode
@@ -89,3 +93,25 @@ void ClockFrequency_Setup()
 
 	RCC->CFGR &= ~(1<<7);
 }
+
+void Systick_Setup()
+{
+	SysTick->LOAD = (uint32_t)170000;                //The value which will be decrementing, 24bit value
+	SysTick->VAL = 0;                              //(undefined on reset)
+ 	SysTick->CTRL  =  (SysTick_CTRL_CLKSOURCE_Msk) //Processor clock (AHB)
+ 				   |  (SysTick_CTRL_ENABLE_Msk)    //Enables the counter
+ 				   |  (SysTick_CTRL_TICKINT_Msk);  //Exception request
+}
+
+uint64_t ms;
+void SysTick_Handler()
+{
+	ms++;
+}
+
+void Interrupt_Setup()
+{
+	NVIC_EnableIRQ(SysTick_IRQn); //Enable interrupt from Systick
+}
+
+
