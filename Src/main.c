@@ -3,6 +3,7 @@
 #include "Libraries/RegistersConfig/RegistersConfig.h"
 #include  "Libraries/SPI/Spi.h"
 #include "Libraries/TFT_ILI9341/TFT_ILI9341.h"
+#include "Libraries/Img_guitar_240x240.h"
 
 
 int main(void)
@@ -17,6 +18,7 @@ int main(void)
 
 	ILI9341_Init();
 	ILI9341_DrawPixel(0, 0, 240, 320, ILI9341_CYAN);
+	ILI9341_DrawImg(0, 0, 240, 240, Img_guitar);
 
 	while(1)
 	{
