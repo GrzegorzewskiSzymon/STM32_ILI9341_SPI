@@ -14,7 +14,7 @@ int main(void)
 	Interrupt_Setup();
 	Systick_Setup();
 
-	SPI1_ENABLE;
+	SPI_ILI9341_ENABLE;
 
 	ILI9341_Init();
 	ILI9341_DrawPixel(0, 0, 240, 320, ILI9341_CYAN);

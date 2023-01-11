@@ -9,6 +9,11 @@
 #include "stm32g431xx.h"
 #include "RegistersConfig.h"
 
+
+//
+// GPIOx
+//
+
 void GPIOA_Setup()
 {
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
@@ -38,6 +43,10 @@ void GPIOA_Setup()
 	GPIOA->MODER &= ~(GPIO_MODER_MODER9_1);//General purpose output mode
 
 }
+
+//
+// SysClk
+//
 
 void ClockFrequency_Setup()
 {
@@ -94,9 +103,52 @@ void ClockFrequency_Setup()
 	RCC->CFGR &= ~(1<<7);
 }
 
+//
+// SPI 1
+//
+
+void Spi1_Setup()
+{
+	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+										//MSB first (by default)
+										//Clock polarity to 0 when idle (by default)
+										//The first clock transition is the first data capture edge (by default)
+										//Data size 8-bit (by default)
+										//Motorola frame format (by default)
+										//No NSS pulse (by default)
+	SPI1->CR1 |= SPI_CR1_MSTR;			//Master configuration
+	SPI1->CR1 |= (4<<SPI_CR1_BR_Pos);	//fPCLK/32 = ~5,3Mhz
+	SPI1->CR1 |= (1<<8) | (1<<9);  		//Software Slave Management
+	SPI1->CR2 = 0;
+}
+
+void Spi1_Send(uint8_t *byte, uint32_t length)
+{
+
+    while (length > 0U)
+    {
+    	//not sure if necessary
+    	if (((SPI1->SR)&(1<<1)))//Wait for TXE bit to set -> This will indicate that the buffer is empty
+    	{
+    		*((volatile uint8_t *) &SPI1->DR) = (*byte);//Load the data into the Data Register
+    		byte++;
+    		length--;
+    	}
+
+    }
+
+    //not sure if necessary
+	//Wait for BSY bit to Reset -> This will indicate that SPI is not busy in communication
+	while (((SPI1->SR)&(1<<7))) {};
+}
+
+//
+// Systick
+//
+
 void Systick_Setup()
 {
-	SysTick->LOAD = (uint32_t)170000;                //The value which will be decrementing, 24bit value
+	SysTick->LOAD = (uint32_t)170000;              //The value which will be decrementing, 24bit value
 	SysTick->VAL = 0;                              //(undefined on reset)
  	SysTick->CTRL  =  (SysTick_CTRL_CLKSOURCE_Msk) //Processor clock (AHB)
  				   |  (SysTick_CTRL_ENABLE_Msk)    //Enables the counter
@@ -108,6 +160,10 @@ void SysTick_Handler()
 {
 	ms++;
 }
+
+//
+// IRQ
+//
 
 void Interrupt_Setup()
 {
