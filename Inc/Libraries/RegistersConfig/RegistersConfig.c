@@ -142,6 +142,46 @@ void Spi1_Send(uint8_t *byte, uint32_t length)
 	while (((SPI1->SR)&(1<<7))) {};
 }
 
+
+//
+// SPI 2
+//
+
+void Spi2_Setup()
+{
+	RCC->APB1ENR1 |= RCC_APB1ENR1_SPI2EN;
+										//MSB first (by default)
+										//Clock polarity to 0 when idle (by default)
+										//The first clock transition is the first data capture edge (by default)
+										//Data size 8-bit (by default)
+										//Motorola frame format (by default)
+										//No NSS pulse (by default)
+	SPI2->CR1 |= SPI_CR1_MSTR;			//Master configuration
+	SPI2->CR1 |= (5<<SPI_CR1_BR_Pos);	//fPCLK/64 = ~2,65Mhz
+	SPI2->CR1 |= (1<<8) | (1<<9);  		//Software Slave Management
+	SPI2->CR2 = 0;
+}
+
+void Spi2_Send(uint8_t *byte, uint32_t length)
+{
+
+    while (length > 0U)
+    {
+    	//not sure if necessary
+    	if (((SPI2->SR)&(1<<1)))//Wait for TXE bit to set -> This will indicate that the buffer is empty
+    	{
+    		*((volatile uint8_t *) &SPI2->DR) = (*byte);//Load the data into the Data Register
+    		byte++;
+    		length--;
+    	}
+
+    }
+
+    //not sure if necessary
+	//Wait for BSY bit to Reset -> This will indicate that SPI is not busy in communication
+	while (((SPI2->SR)&(1<<7))) {};
+}
+
 //
 // Systick
 //

@@ -31,6 +31,8 @@ void Systick_Setup();
 void Interrupt_Setup();
 void Spi1_Setup();
 void Spi1_Send(uint8_t *byte, uint32_t length);
+void Spi2_Setup();
+void Spi2_Send(uint8_t *byte, uint32_t length);
 
 extern uint64_t ms;//reference time counted from the "beginning"
 
