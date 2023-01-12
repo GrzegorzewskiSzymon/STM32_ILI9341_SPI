@@ -1,16 +1,17 @@
 #include <stdint.h>
 #include "stm32g431xx.h"
 #include "Libraries/RegistersConfig/RegistersConfig.h"
-#include  "Libraries/SPI/Spi.h"
 #include "Libraries/TFT_ILI9341/TFT_ILI9341.h"
 #include "Libraries/Img_guitar_240x240.h"
+#include "Libraries/TouchScreen/XPT2046.h"
 
 
 int main(void)
 {
 	ClockFrequency_Setup();//170MHz
 	GPIOA_Setup();
-	Spi1_Setup();
+	Spi_ILI9341_Setup();
+	Spi_XPT2046_Setup();
 	Interrupt_Setup();
 	Systick_Setup();
 
