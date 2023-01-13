@@ -20,7 +20,7 @@ void GPIOA_Setup()
 
 
 	//
-	//SPI 1
+	//SPI 1 - ILI9341
 	//
 
 	//PA5 as SCK
@@ -42,7 +42,46 @@ void GPIOA_Setup()
 	//PA9 as D/C
 	GPIOA->MODER &= ~(GPIO_MODER_MODER9_1);//General purpose output mode
 
+
+	//
+	//SPI 2 - XPT2046
+	//
+
+	//PB13 as SCK
+
+	//PA10 as MISO
+	GPIOA->MODER  &=   ~(GPIO_MODER_MODE10_0);  //Alternate function mode
+	GPIOA->AFR[1] |= (5<<GPIO_AFRH_AFSEL10_Pos);//AFSEL10[0101] -> AF5
+
+	//PA11 as MOSI
+	GPIOA->MODER  &=   ~(GPIO_MODER_MODE11_0);
+	GPIOA->AFR[1] |= (5<<GPIO_AFRH_AFSEL11_Pos);
+
+	//PB3 as IRQ (XPT2046)
+
 }
+
+void GPIOB_Setup()
+{
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+
+	//
+	//SPI 2 - XPT2046
+	//
+
+	//PB13 as SCK
+	GPIOB->MODER  &=   ~(GPIO_MODER_MODE13_0);  //Alternate function mode
+	GPIOB->AFR[1] |= (5<<GPIO_AFRH_AFSEL13_Pos);//AFSEL10[0101] -> AF5
+
+	//PA10 as MISO
+
+	//PA11 as MOSI
+
+	//PB3 as IRQ (XPT2046)
+	GPIOB->MODER  &=   ~( (GPIO_MODER_MODE3_0) | (GPIO_MODER_MODE3_1) );
+}
+
+
 
 //
 // SysClk
@@ -202,12 +241,27 @@ void SysTick_Handler()
 }
 
 //
-// IRQ
+// IRQs
 //
 
 void Interrupt_Setup()
 {
 	NVIC_EnableIRQ(SysTick_IRQn); //Enable interrupt from Systick
+	NVIC_EnableIRQ(EXTI3_IRQn);
 }
 
+void EXTI3_Setup()
+{
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+	SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI3_PB; // Select PB3 as EXTI3
+	EXTI->IMR1 |= EXTI_IMR1_IM3; // Interrupt request is not masked
+	EXTI->RTSR1 |= EXTI_RTSR1_RT3; // Rising edge trigger enabled
+}
+
+void EXTI3_IRQHandler()
+{
+	//Do some stuff
+
+	EXTI->PR1 |= EXTI_PR1_PIF3;
+}
 

@@ -10,16 +10,20 @@ int main(void)
 {
 	ClockFrequency_Setup();//170MHz
 	GPIOA_Setup();
+	GPIOB_Setup();
 	Spi_ILI9341_Setup();
 	Spi_XPT2046_Setup();
 	Interrupt_Setup();
 	Systick_Setup();
 
 	SPI_ILI9341_ENABLE;
+	SPI_XPT2046_ENABLE;
 
 	ILI9341_Init();
 	ILI9341_DrawPixel(0, 0, 240, 320, ILI9341_CYAN);
 	ILI9341_DrawImg(0, 0, 240, 240, Img_guitar);
+
+	XPT2046_IRQ_Setup();
 
 	while(1)
 	{

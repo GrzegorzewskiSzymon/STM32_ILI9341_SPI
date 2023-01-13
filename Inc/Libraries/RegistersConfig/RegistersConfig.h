@@ -21,11 +21,22 @@
 #define ILI9341_DC_COMMAND GPIOA->BSRR |= GPIO_BSRR_BR9; //LOW  - Command
 #define ILI9341_DC_DATA    GPIOA->BSRR |= GPIO_BSRR_BS9; //HIGH - Data
 
+
+//
+// SPI 2 - XPT2046
+//
+
+#define SPI_XPT2046_ENABLE  SPI2->CR1 |=  SPI_CR1_SPE //SPI  enable
+#define SPI_XPT2046_DISABLE SPI2->CR1 &=~ SPI_CR1_SPE //SPI disable
+
+
+
 //
 // Functions
 //
 
 void GPIOA_Setup();
+void GPIOB_Setup();
 void ClockFrequency_Setup();
 void Systick_Setup();
 void Interrupt_Setup();
@@ -33,7 +44,7 @@ void Spi1_Setup();
 void Spi1_Send(uint8_t *byte, uint32_t length);
 void Spi2_Setup();
 void Spi2_Send(uint8_t *byte, uint32_t length);
-
+void EXTI3_Setup();
 extern uint64_t ms;//reference time counted from the "beginning"
 
 #endif /* LIBRARIES_REGISTERSCONFIG_REGISTERSCONFIG_H_ */
