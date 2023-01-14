@@ -44,6 +44,7 @@ void Spi1_Setup();
 void Spi1_Send(uint8_t *byte, uint32_t length);
 void Spi2_Setup();
 void Spi2_Send(uint8_t *byte, uint32_t length);
+uint8_t Spi2_Receive_8b(uint8_t *data);
 void EXTI3_Setup();
 extern uint64_t ms;//reference time counted from the "beginning"
 

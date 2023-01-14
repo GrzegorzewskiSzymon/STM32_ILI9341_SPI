@@ -199,6 +199,7 @@ void Spi2_Setup()
 	SPI2->CR1 |= (5<<SPI_CR1_BR_Pos);	//fPCLK/64 = ~2,65Mhz
 	SPI2->CR1 |= (1<<8) | (1<<9);  		//Software Slave Management
 	SPI2->CR2 = 0;
+	SPI2->CR2 |= SPI_CR2_FRXTH;//RXNE event is generated if the FIFO level is greater than or equal to 1/4 (8-bit)
 }
 
 void Spi2_Send(uint8_t *byte, uint32_t length)
@@ -220,6 +221,18 @@ void Spi2_Send(uint8_t *byte, uint32_t length)
 	//Wait for BSY bit to Reset -> This will indicate that SPI is not busy in communication
 	while (((SPI2->SR)&(1<<7))) {};
 }
+
+uint8_t Spi2_Receive_8b(uint8_t *data)
+{
+	if(SPI2->SR & SPI_SR_RXNE) // if there is data
+	{
+		*data = SPI2->DR;
+
+		return 1;
+	}
+	return 0 ;
+}
+
 
 //
 // Systick
