@@ -23,10 +23,12 @@ int main(void)
 	ILI9341_DrawPixel(0, 0, 240, 320, ILI9341_CYAN);
 	ILI9341_DrawImg(0, 0, 240, 240, Img_guitar);
 
+	XPT2046_Setup();
 	XPT2046_IRQ_Setup();
 
 	while(1)
 	{
+		XPT2046_GetRawData();
 	}
 }
 

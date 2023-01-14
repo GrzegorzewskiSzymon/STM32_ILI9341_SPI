@@ -233,6 +233,30 @@ uint8_t Spi2_Receive_8b(uint8_t *data)
 	return 0 ;
 }
 
+void Spi2_Transreceive_8b(uint8_t *dataTx, uint16_t lengthTx, uint8_t *dataRx, uint16_t lengthRx )
+{
+    while (lengthTx > 0 || lengthRx > 0)
+    {
+    	if(lengthTx > 0)
+    	{
+    		if (((SPI2->SR)&(1<<1)))//Wait for TXE bit to set -> This will indicate that the buffer is empty
+    		{
+    			*((volatile uint8_t *) &SPI2->DR) = (*dataTx);//Load the data into the Data Register
+    			dataTx++;
+    			lengthTx--;
+    		}
+    	}
+    	if(lengthRx > 0)
+    	{
+    		if(SPI2->SR & SPI_SR_RXNE) // if there is data
+    		{
+    			*dataRx = SPI2->DR;
+    			dataRx++;
+    			lengthRx--;
+    		}
+    	}
+    }
+}
 
 //
 // Systick
