@@ -39,7 +39,6 @@ void GPIOA_Setup();
 void GPIOB_Setup();
 void ClockFrequency_Setup();
 void Systick_Setup();
-void Interrupt_Setup();
 void Spi1_Setup();
 void Spi1_Send(uint8_t *byte, uint32_t length);
 void Spi2_Setup();

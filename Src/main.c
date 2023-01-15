@@ -14,7 +14,6 @@ int main(void)
 	GPIOB_Setup();
 	Spi_ILI9341_Setup();
 	Spi_XPT2046_Setup();
-	Interrupt_Setup();
 	Systick_Setup();
 
 	SPI_ILI9341_ENABLE;
@@ -26,6 +25,7 @@ int main(void)
 
 	XPT2046_Setup();
 	XPT2046_IRQ_Setup();
+
 
 	while(1)
 	{

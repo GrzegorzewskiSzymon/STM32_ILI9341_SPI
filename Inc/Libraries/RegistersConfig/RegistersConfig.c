@@ -264,6 +264,8 @@ void Spi2_Transreceive_8b(uint8_t *dataTx, uint16_t lengthTx, uint8_t *dataRx, u
 
 void Systick_Setup()
 {
+	NVIC_EnableIRQ(SysTick_IRQn); //Enable interrupt from Systick
+
 	SysTick->LOAD = (uint32_t)170000;              //The value which will be decrementing, 24bit value
 	SysTick->VAL = 0;                              //(undefined on reset)
  	SysTick->CTRL  =  (SysTick_CTRL_CLKSOURCE_Msk) //Processor clock (AHB)
@@ -278,21 +280,17 @@ void SysTick_Handler()
 }
 
 //
-// IRQs
+// EXTI 3
 //
-
-void Interrupt_Setup()
-{
-	NVIC_EnableIRQ(SysTick_IRQn); //Enable interrupt from Systick
-	NVIC_EnableIRQ(EXTI3_IRQn);
-}
 
 void EXTI3_Setup()
 {
+	NVIC_EnableIRQ(EXTI3_IRQn);
+
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 	SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI3_PB; // Select PB3 as EXTI3
 	EXTI->IMR1 |= EXTI_IMR1_IM3; // Interrupt request is not masked
-	EXTI->RTSR1 |= EXTI_RTSR1_RT3; // Rising edge trigger enabled
+	EXTI->FTSR1 |= EXTI_FTSR1_FT3; // Falling edge trigger enabled
 }
 
 void EXTI3_IRQHandler()
