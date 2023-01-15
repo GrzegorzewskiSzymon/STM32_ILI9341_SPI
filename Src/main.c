@@ -30,7 +30,7 @@ int main(void)
 	while(1)
 	{
 
-		XPT2046_ReadTouchPoint(&posX, &posY);
+		XPT2046_Task();
 	}
 }
 

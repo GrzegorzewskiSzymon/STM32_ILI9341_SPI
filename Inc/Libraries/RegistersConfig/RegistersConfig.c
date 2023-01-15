@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "stm32g431xx.h"
 #include "RegistersConfig.h"
+#include "../TouchScreen/XPT2046.h"
 
 
 //
@@ -273,11 +274,7 @@ void Systick_Setup()
  				   |  (SysTick_CTRL_TICKINT_Msk);  //Exception request
 }
 
-uint64_t ms;
-void SysTick_Handler()
-{
-	ms++;
-}
+
 
 //
 // EXTI 3
@@ -293,10 +290,25 @@ void EXTI3_Setup()
 	EXTI->FTSR1 |= EXTI_FTSR1_FT3; // Falling edge trigger enabled
 }
 
+//
+// INTERRUPT HANDLERS
+//
+
+//XPT2046 PENIRQ handler
 void EXTI3_IRQHandler()
 {
-	//Do some stuff
+	if(TouchState == XPT2046_IDLE)
+	{
+		TouchState = XPT2046_PRESAMPLING;
+	}
+
 
 	EXTI->PR1 |= EXTI_PR1_PIF3;
 }
 
+//SYSTICK
+uint64_t ms;
+void SysTick_Handler()
+{
+	ms++;
+}

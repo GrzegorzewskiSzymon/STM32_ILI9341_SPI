@@ -29,7 +29,8 @@
 #define SPI_XPT2046_ENABLE  SPI2->CR1 |=  SPI_CR1_SPE //SPI  enable
 #define SPI_XPT2046_DISABLE SPI2->CR1 &=~ SPI_CR1_SPE //SPI disable
 
-
+//PB3
+#define XPT2046_PENIRQ_IS_HIGH (GPIOB->IDR & GPIO_IDR_IDR_3)
 
 //
 // Functions
