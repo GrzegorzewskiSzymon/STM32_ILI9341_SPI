@@ -6,6 +6,7 @@
 #include "Libraries/TouchScreen/XPT2046.h"
 
 
+uint16_t posY, posX;
 int main(void)
 {
 	ClockFrequency_Setup();//170MHz
@@ -28,7 +29,8 @@ int main(void)
 
 	while(1)
 	{
-		XPT2046_GetRawData();
+
+		XPT2046_ReadTouchPoint(&posX, &posY);
 	}
 }
 
